@@ -1,5 +1,6 @@
 package fr.afpa.GestionHoteliere;
 
+import java.util.Scanner;
 import java.io.IOException;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ public class MainGestionHoteliere {
 				clearScreen();
 				String lastChoice = null;
 				displayMenu(lastChoice);
+				tttmenu(lastChoice, username, password, nbRoom, nbOption, listOfRoom);
 	}
 	/**
 	 * Creates the tab.
@@ -78,8 +80,244 @@ public class MainGestionHoteliere {
 			System.out.println("Precedent: " + lastChoice);
 		}
 		System.out.print("Votre choix :");
-		
-		
 	}
 	
+	
+	/**
+	 * Asks the choice and runs the functionalities of the program
+	 * 
+	 * @param lastChoice
+	 * 		The last choice made by the user
+	 * @param username
+	 * 		The stocked login
+	 * @param password
+	 * 		The stocked password
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param nbOption
+	 * 		The number of options (ex: number of rooms, availability of the rooms...)
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void tttmenu(String lastChoice, String username, String password, int nbRoom, int nbOption, int listOfRoom[][] ) {
+		Scanner sc = new Scanner(System.in);
+		boolean run = true;
+		do {
+		String choice = sc.nextLine();
+			switch(choice.toUpperCase()) { 
+				case "A":
+					clearScreen();
+					lastChoice = "Choix A";
+					hotelStatus(nbRoom, listOfRoom);
+					break;
+				
+				case "B":
+					clearScreen();
+					lastChoice = "Choix B";
+					BookedRoom(nbRoom, listOfRoom);
+					break;
+				
+				case "C":
+					clearScreen();
+					lastChoice = "Choix C";
+					AvailableRoom(nbRoom, listOfRoom);
+					break;
+				
+				case "D":
+					clearScreen();
+					lastChoice = "Choix D";
+					firstAvailableRoom(nbRoom, listOfRoom);
+					break;
+
+				case "E":
+					clearScreen();
+					lastChoice = "Choix E";
+					lastAvailableRoom(nbRoom, listOfRoom);
+					break;
+					
+				case "F":
+					clearScreen();
+					lastChoice = "Choix F";
+					bookRoom(username, password, nbRoom, listOfRoom);
+					break;
+
+				case "G":
+					clearScreen();
+					lastChoice = "Choix G";
+					releaseRoom(username, password, nbRoom, listOfRoom);
+					break;
+				
+				case "Q":
+					clearScreen();
+					run = false;
+					System.out.println("Bye :(");
+					break;
+					
+				default:
+					clearScreen();
+					displayMenu(lastChoice);
+			}
+		} while(run);
+	}
+	
+	/**
+	 * Displays the status of the rooms
+	 * 
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void hotelStatus(int nbRoom, int listOfRoom[][]) {
+		System.out.println("Voici le statut des chambres : ");
+		for (int i=0; i<nbRoom; i++) {
+			System.out.print("Chambre " + listOfRoom[i][0] + ", disponibilite : " + listOfRoom[i][1] + "\n");
+		}
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
+	
+	public static void BookedRoom(int nbRoom, int listOfRoom[][]) {
+		System.out.println("Liste des chambres reserves: ");
+		int nbBookedRoom = 0;
+		
+		for (int i = 0; i< nbRoom ;i++) {
+		if (listOfRoom[i][1] == 1) {
+				nbBookedRoom += 1;	
+				System.out.println("Chambre " + listOfRoom[i][0]);
+			}
+		}
+		System.out.println ("\nIl y a " +  nbBookedRoom  + " chambres reservee(s).");
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
+	
+
+	
+	/**
+	 * Displays the available rooms
+	 * 
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void AvailableRoom(int nbRoom, int listOfRoom[][]) {
+		System.out.println("Liste des chambres libre: ");
+		int nbAvailableRoom = 0;
+		
+		for (int i = 0; i< nbRoom ;i++) {
+		if (listOfRoom[i][1] == 0) {
+				nbAvailableRoom += 1;	
+				System.out.println("Chambre " + listOfRoom[i][0]);
+			}
+		}
+		System.out.println ("\nIl y a " +  nbAvailableRoom  + " chambres libre(s).");
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
+	
+	/**
+	 * Displays the first available room
+	 * 
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void firstAvailableRoom(int nbRoom, int listOfRoom[][]) {
+		for (int i = 0; i< nbRoom ;i++) {
+			if (listOfRoom[i][1] == 0) {	
+				System.out.println("La premiere chambre libre est la chambre " + listOfRoom[i][0] + ".");
+				break;
+			}
+		}
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
+	
+	/**
+	 * Displays the last available room
+	 * 
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void lastAvailableRoom(int nbRoom, int listOfRoom [][]) {
+		for (int i = nbRoom-1; i>=0 ;i--) {
+			if (listOfRoom[i][1] == 0) {	
+				System.out.println("La derniere chambre libre est la chambre " + listOfRoom[i][0] + ".");
+				break;
+			}
+		}
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
+	
+	
+	/**
+	 * Books the first available room. 
+	 * Ask the login and password. If one of them is invalid, the room is not book 
+	 * 
+	 * @param username
+	 * 		The stocked login
+	 * @param password
+	 * 		The stocked password
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void bookRoom(String username, String password, int nbRoom, int listOfRoom[][]) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Vous desirez reserver une chambre.");
+		System.out.print("Veuillez entrer votre login : ");
+		String usernameTest = sc.next();
+		System.out.print("Veuillez entrer votre mot de passe : ");
+		String passwordTest = sc.next();
+		if (usernameTest.equals(username) && (passwordTest.equals(password))) {
+			for (int i = 0; i< nbRoom ;i++) {
+				if (listOfRoom[i][1] == 0) {	
+					listOfRoom[i][1] = 1;
+					System.out.println("La chambre " + listOfRoom[i][0] + " est reservee.");
+					break;
+				}
+			}	
+		}else {
+			System.out.println("\nLogin ou mot de passe invalide.");
+		}
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
+	
+	/**
+	 * Releases the last available room. 
+	 * Ask the login and password. If one of them is invalid, the room is not release 
+	 * 
+	 * @param username
+	 * 		The stocked login
+	 * @param password
+	 * 		The stocked password
+	 * @param nbRoom
+	 * 		The number of rooms
+	 * @param listOfRoom
+	 * 		The tab containing the rooms
+	 */
+	public static void releaseRoom(String username, String password, int nbRoom, int listOfRoom[][]) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Vous desirez liberer la chambre.");
+		System.out.print("Veuillez entrer votre login : ");
+		String usernameTest = sc.next();
+		System.out.print("Veuillez entrer votre mot de passe : ");
+		String passwordTest = sc.next();
+		if (usernameTest.equals(username) && (passwordTest.equals(password))) {
+			int position = 0;
+			for (int i = 0; i< nbRoom ;i++) {
+				if (listOfRoom[i][1] == 1) {	
+					position = listOfRoom[i][0];
+				}
+			}
+			listOfRoom[position-1][1] = 0;
+			System.out.println("La chambre " + position + " est liberee.");
+			
+		}else {
+			System.out.println("\nLogin ou mot de passe invalide.");
+		}
+		System.out.print("\nAppuyez sur entrer pour continuer...");
+	}
 }
